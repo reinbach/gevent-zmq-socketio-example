@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Gevent ZMQ SocketsIO Example</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" media="screen" />
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flot/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flot/jquery.flot.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/graph.js') }}"></script>
+    <style type="text/css" media="screen">
+      body { padding-top: 60px; }
+    </style>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+	<div class="container">
+	  <a class="brand" href="/">Gevent ZMQ SocketsIO Example</a>
+	</div>
+      </div>
+    </div>
+    <div class="container">
+      <section id="graph">
+        <div class="page-header">
+   	  <h2>Sine Graph</h2>
+        </div>
+	<div class="row">
+	  <div class="span12">
+            <div id="conn_status">Not Connected</div>
+            <div id="placeholder" style="width: 600px; height: 300px;"></div>
+	  </div>
+	</div>
+      </section>
+    </div>
+  </body>
+</html>
