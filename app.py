@@ -1,3 +1,7 @@
+import json
+import math
+import time
+
 from flask import Flask, render_template
 
 import gevent
@@ -11,50 +15,28 @@ import zmq
 app = Flask(__name__)
 app.debug = True
 
-#===============================================================================
 class SocketIOApp(object):
-    """Handle socketio requests and assigned to relevant class"""
-    #---------------------------------------------------------------------------
+    """Stream sine values"""
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].startswith('/socket.io'):
             socketio_manage(environ, {'': SineWave});
 
-#===============================================================================
 class SineWave(BaseNamespace, BroadcastMixin):
-    """Steam sine values"""
-         
-    #---------------------------------------------------------------------------
     def on_stream(self, msg):
         context = zmq.Context()
         sock = context.socket(zmq.SUB)
         sock.setsockopt(zmq.SUBSCRIBE, "")
-        sock.connect('inproc://queue')
+        sock.bind("tcp://127.0.0.1:5000")
+        print "Connected, ready to stream..."
         while True:
             msg = sock.recv()
             self.broadcast_event('message', msg)
+            gevent.sleep(0.1)
 
-#---------------------------------------------------------------------------
-def sine_server():
-    """Funnel stream from external tcp socket and pass off to inproc socket"""
-    print "Sine server running, waiting for data..."
-    context = zmq.Context()
-    sock_incoming = context.socket(zmq.SUB)
-    sock_incoming.bind("tcp://*:5000")
-    sock_incoming.setsockopt(zmq.SUBSCRIBE, "")
-
-    sock_outgoing = context.socket(zmq.PUB)
-    sock_outgoing.bind("inproc://queue")
-    
-    while True:
-        msg = sock_incoming.recv()
-        sock_outgoing.send(msg)
-
-#---------------------------------------------------------------------------
 @app.route("/")
 def home():
     return render_template("index.html")
 
-#---------------------------------------------------------------------------
 def main():
     # setup server to handle webserver requests
     http_server = WSGIServer(('', 8000), app)
@@ -68,8 +50,7 @@ def main():
 
     gevent.joinall([
         gevent.spawn(http_server.serve_forever),
-        gevent.spawn(sio_server.serve_forever),
-        gevent.spawn(sine_server),
+        gevent.spawn(sio_server.serve_forever)
     ])
 
 if __name__ == "__main__":
