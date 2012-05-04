@@ -1,13 +1,14 @@
 gevent-zmq-socketio-example
 ========================
 
-Mini app using gevent, zmq and socketio
+Mini app using gevent, zmq and socketio.
 
 
 To Install and Run
 ------------------
 
     python setup.py install
+    python producer.py
     python app.py
 
 Then point a browser at http://localhost:8000
