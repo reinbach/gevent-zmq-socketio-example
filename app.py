@@ -19,14 +19,14 @@ class SocketIOApp(object):
     """Stream sine values"""
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'].startswith('/socket.io'):
-            socketio_manage(environ, {'': SineWave});
+            gevent.spawn(socketio_manage(environ, {'': SineWave}))
 
 class SineWave(BaseNamespace, BroadcastMixin):
     def on_stream(self, msg):
         context = zmq.Context()
         sock = context.socket(zmq.SUB)
         sock.setsockopt(zmq.SUBSCRIBE, "")
-        sock.bind("tcp://127.0.0.1:5000")
+        sock.connect("tcp://127.0.0.1:5000")
         print "Connected, ready to stream..."
         while True:
             msg = sock.recv()
