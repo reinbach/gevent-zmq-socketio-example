@@ -9,7 +9,7 @@ def sine_producer():
     print "Sine producer running, generating sine wave..."
     context = zmq.Context()
     socket = context.socket(zmq.PUB)
-    socket.connect("tcp://127.0.0.1:5000")
+    socket.bind("tcp://127.0.0.1:5000")
     
     while True:
         x = time.time()
